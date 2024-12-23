@@ -1,10 +1,21 @@
 if(!window.syncIqBack){
-    window.syncIqBack = require("WASyncdRequestBuilderBuild").buildSyncIqNode
+    window.syncIqBack = require("WAWebSyncdRequestBuilderBuild").buildSyncIqNode
 }
   
-require("WASyncdRequestBuilderBuild").buildSyncIqNode = (a) => {
+require("WAWebSyncdRequestBuilderBuild").buildSyncIqNode = (a) => {
     const result = window.syncIqBack(a)
-    console.log(a)
+    const values = Array.from(a.values()).flat()
+    
+    console.log(
+        '\u001B[35m[APP STATE MUTATION]\u001B[0m',
+        values.map(v => (
+                {
+                    ...v,
+                    binarySyncAction: require("decodeProtobuf").decodeProtobuf(require("WASyncAction.pb").SyncActionValueSpec, v.binarySyncAction)
+                }
+            )
+        )
+    )
     return result
 }
   
